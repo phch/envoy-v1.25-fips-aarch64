@@ -5,9 +5,9 @@ set -e
 # BoringSSL build as described in the Security Policy for BoringCrypto module (2020-07-02):
 # https://csrc.nist.gov/CSRC/media/projects/cryptographic-module-validation-program/documents/security-policies/140sp3678.pdf
 
-# This works only on Linux-x86_64.
-if [[ `uname` != "Linux" || `uname -m` != "x86_64" ]]; then
-  echo "ERROR: BoringSSL FIPS is currently supported only on Linux-x86_64."
+# This works only on Linux aarch64.
+if [[ `uname` != "Linux" || `uname -m` != "aarch64" ]]; then
+  echo "ERROR: BoringSSL FIPS is currently supported only on Linux-aarch64."
   exit 1
 fi
 
@@ -26,8 +26,8 @@ export PATH="$(dirname `which cmake`):/usr/bin:/bin"
 
 # Clang 7.0.1
 VERSION=7.0.1
-SHA256=02ad925add5b2b934d64c3dd5cbd1b2002258059f7d962993ba7f16524c3089c
-PLATFORM="x86_64-linux-gnu-ubuntu-16.04"
+SHA256=05d7318bbefed61671d19e537397cceb6f7e42573b840dfba0a8685e415db2e9
+PLATFORM="aarch64-linux-gnu"
 
 curl -sLO https://releases.llvm.org/"$VERSION"/clang+llvm-"$VERSION"-"$PLATFORM".tar.xz \
   && echo "$SHA256" clang+llvm-"$VERSION"-"$PLATFORM".tar.xz | sha256sum --check
@@ -44,8 +44,8 @@ fi
 
 # Go 1.12.7
 VERSION=1.12.7
-SHA256=66d83bfb5a9ede000e33c6579a91a29e6b101829ad41fffb5c5bb6c900e109d9
-PLATFORM="linux-amd64"
+SHA256=4da1f7198a8fa0c4067852656b6c10153a4eca5a26aca28ef02ae9f4a7939ba5
+PLATFORM="linux-arm64"
 
 curl -sLO https://dl.google.com/go/go"$VERSION"."$PLATFORM".tar.gz \
   && echo "$SHA256" go"$VERSION"."$PLATFORM".tar.gz | sha256sum --check
@@ -62,14 +62,14 @@ fi
 
 # Ninja 1.9.0
 VERSION=1.9.0
-SHA256=1b1235f2b0b4df55ac6d80bbe681ea3639c9d2c505c7ff2159a3daf63d196305
-PLATFORM="linux"
+SHA256=8e2e654a418373f10c22e4cc9bdbe9baeca8527ace8d572e0b421e9d9b85b7ef
 
-curl -sLO https://github.com/ninja-build/ninja/releases/download/v"$VERSION"/ninja-"$PLATFORM".zip \
-  && echo "$SHA256" ninja-"$PLATFORM".zip | sha256sum --check
-unzip -o ninja-"$PLATFORM".zip
+curl -sL https://github.com/ninja-build/ninja/archive/refs/tags/v"$VERSION".zip -o ninja-"$VERSION".zip \
+  && echo "$SHA256" ninja-"$VERSION".zip | sha256sum --check
+unzip -o ninja-"$VERSION".zip
+cd ninja-"$VERSION" && ./configure.py --bootstrap && cd ..
 
-export PATH="$PWD:$PATH"
+export PATH="$PWD/ninja-$VERSION:$PATH"
 
 if [[ `ninja --version` != "$VERSION" ]]; then
   echo "ERROR: Ninja version doesn't match."
