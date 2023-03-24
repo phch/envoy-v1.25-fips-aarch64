@@ -42,9 +42,9 @@ if [[ `clang --version | head -1 | awk '{print $3}'` != "$VERSION" ]]; then
   exit 1
 fi
 
-# Go 1.12.7
-VERSION=1.12.7
-SHA256=4da1f7198a8fa0c4067852656b6c10153a4eca5a26aca28ef02ae9f4a7939ba5
+# Go 1.13.15
+VERSION=1.13.15
+SHA256=a5c59e3f0aeaf6e939790152a8bfabb91d70c9787afb7aee06aef9bd4411c551
 PLATFORM="linux-arm64"
 
 curl -sLO https://dl.google.com/go/go"$VERSION"."$PLATFORM".tar.gz \
